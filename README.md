@@ -1,5 +1,3 @@
-Here’s a GitHub‑ready README you can paste and customize. It uses sections, bullets, and emojis as you asked.
-
 🧠 AI‑Assisted Early Alzheimer’s Prediction
 
 An AI‑powered web application that helps doctors analyze brain MRI scans and predict the stage of Alzheimer’s disease using a deep learning model built on EfficientNetB3.
