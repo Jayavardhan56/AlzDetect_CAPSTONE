@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - AlzDetect</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .welcome-section {
+            background: linear-gradient(135deg, #004d40 0%, #00897b 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .welcome-section h1 {
+            margin: 0;
+        }
+        .btn-logout {
+            background-color: #d32f2f;
+        }
+        .btn-logout:hover {
+            background-color: #b71c1c;
+        }
+        .profile-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        .profile-section h2 {
+            color: #004d40;
+            margin-top: 0;
+        }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .profile-item {
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .profile-label {
+            color: #757575;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .profile-value {
+            color: #212121;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .reports-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .reports-section h2 {
+            color: #004d40;
+            margin-top: 0;
+        }
+        .report-card {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+        }
+        .report-card h3 {
+            color: #004d40;
+            margin-top: 0;
+        }
+        .report-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .detail-item {
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .detail-label {
+            color: #757575;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .detail-value {
+            color: #212121;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        .no-reports {
+            text-align: center;
+            color: #757575;
+            padding: 40px;
+        }
+        .prediction-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .badge-positive {
+            background-color: #d32f2f;
+            color: white;
+        }
+        .badge-negative {
+            background-color: #388e3c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h1>AlzDetect</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="#reports">My Reports</a></li>
+                <li><button onclick="logout()" class="btn btn-logout" style="border: none; cursor: pointer;">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div>
+                <h1 id="patient-name">Patient Dashboard</h1>
+                <p>View your health reports and AI insights</p>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <h2>My Profile</h2>
+            <div class="profile-grid">
+                <div class="profile-item">
+                    <div class="profile-label">Name</div>
+                    <div class="profile-value" id="profile-name">-</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">Email</div>
+                    <div class="profile-value" id="profile-email">-</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">Age</div>
+                    <div class="profile-value" id="profile-age">-</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">Gender</div>
+                    <div class="profile-value" id="profile-gender">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div class="reports-section" id="reports">
+            <h2>My Reports</h2>
+            <div id="reports-list">
+                <div class="no-reports">No reports available yet</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load patient data on page load
+        window.addEventListener('load', function() {
+            loadPatientDashboard();
+        });
+
+        function loadPatientDashboard() {
+            fetch('/api/patient-dashboard')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const patient = data.patient;
+                        document.getElementById('patient-name').textContent = 'Welcome, ' + patient.fullname;
+                        document.getElementById('profile-name').textContent = patient.fullname;
+                        document.getElementById('profile-email').textContent = patient.email;
+                        document.getElementById('profile-age').textContent = patient.age + ' years';
+                        document.getElementById('profile-gender').textContent = patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1);
+                        displayReports(data.scans);
+                    } else {
+                        window.location.href = '/login.html';
+                    }
+                })
+                .catch(e => console.error(e));
+        }
+
+        function displayReports(scans) {
+            const reportsList = document.getElementById('reports-list');
+            
+            if (scans.length === 0) {
+                reportsList.innerHTML = '<div class="no-reports">No reports available yet. Contact your doctor to upload an MRI scan.</div>';
+                return;
+            }
+
+            reportsList.innerHTML = scans.map(scan => `
+                <div class="report-card">
+                    <h3>MRI Scan Report</h3>
+                    <div class="prediction-badge ${scan.prediction.toLowerCase() === 'positive' ? 'badge-positive' : 'badge-negative'}">
+                        ${scan.prediction}
+                    </div>
+                    <div class="report-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Prediction</div>
+                            <div class="detail-value">${scan.prediction}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Confidence</div>
+                            <div class="detail-value">${(scan.confidence * 100).toFixed(2)}%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Stage</div>
+                            <div class="detail-value">${scan.stage || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Date</div>
+                            <div class="detail-value">${scan.created_at}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function logout() {
+            fetch('/api/logout', {method: 'POST'})
+                .then(() => { window.location.href = '/login.html'; });
+        }
+    </script>
+</body>
+</html>
