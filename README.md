@@ -2,7 +2,7 @@
 
 An AI‑powered web application that helps doctors analyze brain MRI scans and predict the stage of Alzheimer’s disease using a deep learning model built on EfficientNetB3.
 
-🌟 Project Overview
+🌟 Project Overview:
 
 🩺 Goal: Support early detection of Alzheimer’s by classifying brain MRI scans into four stages.
 
