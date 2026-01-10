@@ -6,6 +6,7 @@ An AI‑powered web application that helps doctors analyze brain MRI scans and p
 
 🩺 Goal: Support early detection of Alzheimer’s by classifying brain MRI scans into four stages.
 
+
 👨‍⚕️ Users: Doctors (upload & analyze MRIs, view reports) and Patients (view their results shared by doctors).
 
 🤖 Core AI: Transfer‑learning model (EfficientNetB3) trained on 4 MRI classes, achieving high validation accuracy on the dataset.
